@@ -123,4 +123,57 @@ body{
   .subtitle{
     font-size:30px;
   }
+  .header{
+    display:flex;
+    width:1000px;
+    justify-content:space-between;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .row{
+    display:flex;
+    width:1000px;
+    justify-content:center;
+    margin-left:auto;
+    margin-right:auto;
+    background:${({theme})=>theme.typeBox};
+    height:15rem;
+    border-radius:20px;
+    padding:1rem;
+    align-text:center;
+  }
+  .userinfo{
+    width:50%;
+    display:flex;
+    margin-top:30px;
+    margin-bottom:30px;
+    font-size:1.5rem;
+    padding:1rem;
+  }
+  .info{
+    width:60%;
+    padding:1rem;
+    margin-top:1rem;
+  }
+  .image{
+    width:40%
+  }
+  .test{
+    width:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:6rem;
+    font-size:3rem;
+  }
+  .table,.graph-user-page{
+    margin:auto;
+    width:1000px;
+  }
+  .center-of-screen{
+    display:flex;
+    min-height:100vh;
+    justify-content:center;
+    align-items:center;
+  }
 `

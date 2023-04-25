@@ -1,21 +1,24 @@
 import { ThemeProvider } from "styled-components";
-import Footer from "./Components/Footer";
-import TypingBox from "./Components/TypingBox";
 import { GlobalStyle } from "./Styles/global";
 import { useTheme } from "./Context/ThemeContest";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import Home from "./Pages/Home";
+import { Route, Routes } from "react-router-dom";
+import UserPage from "./Pages/UserPage";
 
 function App() {
-  const {theme}= useTheme();
+  const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme}>
-  <div className="canvas">
       <GlobalStyle />
-    <div>Header</div>
-    <TypingBox />
-    <Footer />
-    </div>
+      <ToastContainer />
+      <Routes>
+        <Route path="/" element={ <Home />} />
+        <Route path="/user" element={ <UserPage />} />
+      </Routes>
     </ThemeProvider>
-  
+
   );
 }
 

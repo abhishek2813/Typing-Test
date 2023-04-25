@@ -1,6 +1,7 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Graph from './Graph'
-
+import { auth, db } from '../fireBaseConfig';
+import {toast} from 'react-toastify'
 function Stats(  {wpm,
     accuracy,
     correctChars,
@@ -17,7 +18,70 @@ function Stats(  {wpm,
       }
     })
   
-
+    const pushDataToDb = ()=>{
+      if(isNaN(accuracy)){
+        toast.error('Invaild Test', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          });
+          return;
+      }
+     const resultref = db.collection('Results')
+     const {uid} = auth.currentUser;
+     resultref.add({
+      wpm:wpm,
+      accuracy:accuracy,
+      timeStamp: new Date(),
+      Character: `${correctChars}/${incorrectChars}/${missedchars}/${extraChars}`,
+      userId:uid
+     }).then((res)=>{
+      toast.success('Saved in db', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+     }).catch((err)=>{
+      toast.error('Not able to save result', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+     })
+    }
+  
+    useEffect(() => {
+     if(auth.currentUser){
+      pushDataToDb()
+     }else{
+      toast.warning('Login to save Result', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+     }
+    }, [])
+    
   return (
     <div className='stats-box'>
         <div className="left-stats">
