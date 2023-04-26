@@ -6,6 +6,7 @@ import { CircularProgress } from '@mui/material';
 import TableData from '../Components/TableData';
 import Graph from '../Components/Graph';
 import UserInfo from '../Components/UserInfo';
+import Header from '../Components/Header';
 
 function UserPage() {
   const [data, setData] = useState([]);
@@ -48,6 +49,7 @@ function UserPage() {
    
   }
   return (<div className='canvas'>
+    <Header />
     <UserInfo totalTest={data.length}/>
     <div className="graph-user-page">
     <Graph graphData={graphData} />

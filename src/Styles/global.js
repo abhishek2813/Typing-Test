@@ -24,7 +24,7 @@ body{
 }
 .type-box{
   max-width:1000px;
-  height:140px;
+  height:235px;
   margin-left:auto;
   margin-right:auto;
   overflow:hidden;
@@ -137,6 +137,7 @@ body{
     margin-left:auto;
     margin-right:auto;
     background:${({theme})=>theme.typeBox};
+    color:${({theme})=>theme.textColor};
     height:15rem;
     border-radius:20px;
     padding:1rem;

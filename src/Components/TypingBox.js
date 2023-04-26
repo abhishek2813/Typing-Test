@@ -208,6 +208,7 @@ function TypingBox() {
                 missedchars={missedChar}
                 extraChars={extraChar}
                 graphData={graphData}
+                resetTest={resetTest}
             />) : (<div className='type-box' onClick={inputFocus}>
                 <div className='words'>
                     {wordArray.map((word, index) => (

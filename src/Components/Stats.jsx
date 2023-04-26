@@ -2,13 +2,16 @@ import React,{useEffect} from 'react'
 import Graph from './Graph'
 import { auth, db } from '../fireBaseConfig';
 import {toast} from 'react-toastify'
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 function Stats(  {wpm,
     accuracy,
     correctChars,
     incorrectChars,
     missedchars,
     extraChars,
-    graphData
+    graphData,
+    resetTest
   }) {
     let timeSet = new Set();
     const newGraph = graphData.filter(i=>{
@@ -81,7 +84,7 @@ function Stats(  {wpm,
         });
      }
     }, [])
-    
+    const navigate = useNavigate();
   return (
     <div className='stats-box'>
         <div className="left-stats">
@@ -90,7 +93,8 @@ function Stats(  {wpm,
           <div className="title">Accuracy</div>
           <div className="subtitle">{accuracy} %</div>
           <div className="title">Chareters</div>
-          <div className="subtitle">{correctChars}/{incorrectChars}/{missedchars}/{extraChars}</div>
+          <div className="subtitle">{correctChars}/{incorrectChars}/{missedchars}/{extraChars}</div> <br />
+          <div><Button variant="contained" onClick={()=>{resetTest()}}>Back to Test</Button></div>
         </div>
         <div className="right-stats">
            <Graph graphData={newGraph}/>

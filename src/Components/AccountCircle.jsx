@@ -1,4 +1,5 @@
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'; import { AppBar, Modal, Tab, Tabs,Box } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
+import { AppBar, Modal, Tab, Tabs,Box } from '@mui/material';
 import React, { useState } from 'react'
 import LoginFrom from './LoginFrom';
 import SignUpForm from './SignUpForm';
@@ -71,6 +72,7 @@ function AccountCircle() {
                 progress: undefined,
                 theme: "dark",
                 }); 
+                navigate('/')
     }
     return (
         <div>
