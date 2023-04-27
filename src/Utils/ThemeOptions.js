@@ -41,7 +41,49 @@ const goldTheme = {
     textColor: '#3b4d61',
     typeBox: '#6b7b8c'
 }
+const superUserTheme = {
+    label: 'Super User',
+    background: '#262A33',
+    textColor: '#43FFAF',
+    typeBox: '#526777'
+}
+
+const darkMagic = {
+    label: 'Dark Magic',
+    background: '#091F2C',
+    textColor: '#A286B8',
+    typeBox: '#91E4D1',
+}
+
+const bentoTheme = {
+    label:"Bento",
+    background: "#2D394D",
+    textColor: "#FF7A90",
+    typeBox: "#4A768D",
+    stats: "#FF7A90"
+}
+
+const futureFunkTheme = {
+    label: "Future Funk",
+    background: "#2E1A47",
+    textColor: "#fff",
+    typeBox: "#C18FFF",
+    stats: "#fff"
+}
+
+const aetherTheme = {
+    label: "Aether",
+    background: "#101820",
+    textColor: "#EEDAEA",
+    typeBox: "#CF6BDD",
+    stats: "#EEDAEA"
+}
 export const themeOptions = [
+    {value: superUserTheme, label: 'Super User'},
+    {value: darkMagic, label: 'Dark Magic'},
+    {value: bentoTheme, label: "Bento"},
+    {value: futureFunkTheme, label: "Future Funk"},
+    {value: aetherTheme, label: "Aether"},
     { label: 'Dark', value: darkTheme },
     { label: 'Red sea-foam', value: redTheme },
     { label: 'Blue Dolfin', value: dolfinTheme },

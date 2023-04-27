@@ -11,7 +11,7 @@ import { Link } from '@mui/material';
 
 function Footer() {
 
-  const { settheme, theme } = useTheme();
+  const { settheme, theme,defaultTheme } = useTheme();
   const handleChange = (e) => {
 
     settheme(e.value);
@@ -46,7 +46,7 @@ function Footer() {
           <Select
             onChange={handleChange}
             options={themeOptions}
-            defaultValue={{ label: theme.label, value: theme }}
+            defaultValue={{ label: defaultTheme.label, value: defaultTheme }}
             styles={{
               control: (styles) => ({
                 ...styles,
@@ -63,8 +63,8 @@ function Footer() {
                   backgroundColor: !isFocused ? theme.background : theme.textColor,
                   cursor: "pointer"
                 }
-
-              }
+              },
+              singleValue: styles => ({...styles, color: theme.title}),
             }}
           />
         </div>
