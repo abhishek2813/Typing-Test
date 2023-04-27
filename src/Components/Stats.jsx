@@ -3,7 +3,6 @@ import Graph from './Graph'
 import { auth, db } from '../fireBaseConfig';
 import {toast} from 'react-toastify'
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 function Stats(  {wpm,
     accuracy,
     correctChars,
@@ -84,7 +83,6 @@ function Stats(  {wpm,
         });
      }
     }, [])
-    const navigate = useNavigate();
   return (
     <div className='stats-box'>
         <div className="left-stats">

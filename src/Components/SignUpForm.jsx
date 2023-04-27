@@ -2,18 +2,18 @@ import { Box, Button, TextField } from '@mui/material'
 import React from 'react'
 import { useState } from 'react'
 import { useTheme } from '../Context/ThemeContest';
-import {auth} from '../fireBaseConfig'
-import {toast} from 'react-toastify'
+import { auth } from '../fireBaseConfig'
+import { toast } from 'react-toastify'
 import errorMapping from '../Utils/errorMapping';
 
-function SignUp({handleClose}) {
+function SignUp({ handleClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
   const { theme } = useTheme();
 
-  const handleSubmit = ()=>{
-    if(!email || !password || !cpassword){
+  const handleSubmit = () => {
+    if (!email || !password || !cpassword) {
       toast.warning('Fill All Details', {
         position: "top-right",
         autoClose: 3000,
@@ -23,10 +23,10 @@ function SignUp({handleClose}) {
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
+      });
       return;
     }
-    if (password !==cpassword) {
+    if (password !== cpassword) {
       toast.warning('Password Not Matched', {
         position: "top-right",
         autoClose: 3000,
@@ -36,10 +36,10 @@ function SignUp({handleClose}) {
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
+      });
       return;
     }
-    auth.createUserWithEmailAndPassword(email,password).then((res)=>{
+    auth.createUserWithEmailAndPassword(email, password).then((res) => {
       toast.success('User Created', {
         position: "top-right",
         autoClose: 3000,
@@ -49,9 +49,9 @@ function SignUp({handleClose}) {
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
-        handleClose()
-    }).catch((err)=>{
+      });
+      handleClose()
+    }).catch((err) => {
       toast.error(errorMapping[err.code] || 'Something Went Wrong', {
         position: "top-right",
         autoClose: 3000,
@@ -61,7 +61,7 @@ function SignUp({handleClose}) {
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
+      });
     })
   }
   return (
@@ -123,7 +123,7 @@ function SignUp({handleClose}) {
           color: theme.background,
           background: theme.textColor
         }}
-        onClick={handleSubmit}
+          onClick={handleSubmit}
         >SignUp</Button>
       </Box>
     </div>

@@ -4,6 +4,9 @@ import { themeOptions } from '../Utils/ThemeOptions';
 import { useTheme } from '../Context/ThemeContest';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { Link } from '@mui/material';
 
 function Footer() {
@@ -24,8 +27,15 @@ function Footer() {
           <Link href="https://www.linkedin.com/in/abhishek-pandey-807790227/" underline="none" color="inherit">
             <LinkedInIcon fontSize="large" />
           </Link>
-
-
+          <Link href="https://www.facebook.com/profile.php?id=100027154895700&mibextid=ZbWKwL" underline="none" color="inherit">
+            <FacebookIcon fontSize="large" />
+          </Link>
+          <Link href="https://www.instagram.com/abhishekpandey2060/" underline="none" color="inherit">
+            <InstagramIcon fontSize="large" />
+          </Link>
+          <Link href="https://docs.google.com/document/d/1_zMYCW7Si7S4rO9PuS0CFhXfkoEOcH_rJu4F6l8CMQU/edit?usp=sharing" underline="none" color="inherit">
+            <DocumentScannerIcon fontSize="large" />
+          </Link>
         </div>
       </div>
       <div className="center">
