@@ -3,215 +3,220 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from 'react'
 import UpperMenu from './UpperMenu';
 import { useTestMode } from '../Context/TestModeContext';
 import Stats from './Stats';
-var randomWords = require('random-words'); //Import random word Array from random-word
+var randomWords = require("random-words");
 
-function TypingBox() {
-    // Creating usesate wordArray for Array 
-    const [wordArray, setwordArray] = useState(() => {
-        return randomWords(50);
-    })
+const TypingBox = () => {
+  const inputRef = useRef(null);
+  const { testTime } = useTestMode();
+  const [currWordIndex, setCurrWordIndex] = useState(0);
+  const [currCharIndex, setCurrCharIndex] = useState(0);
+  const [countDown, setCountDown] = useState(testTime); //value in secs
+  const [testStart, setTestStart] = useState(false);
+  const [testEnd, setTestEnd] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
+  const [correctChars, setCorrectChars] = useState(0);
+  const [correctWords, setCorrectWords] = useState(0);
+  const [incorrectChars, setIncorrectChars] = useState(0);
+  const [extraChars, setExtraChars] = useState(0);
+  const [missedChars, setMissedChars] = useState(0);
+  const [graphData, setGraphData] = useState([]);
+  const wordSpanRef = Array(500)
+    .fill(0)
+    .map((i) => createRef());
+  const [words, setWords] = useState(() => {
+    return randomWords(500);
+  });
 
-    //Create Current word Index by useSate
-    const [currWordIndex, setcurrWordIndex] = useState(0);
+  const startTimer = () => {
+    const intervalId = setInterval(timer, 1000); // will run the timer function after every 1000ms
+    setIntervalId(intervalId);
+    function timer() {
+      setCountDown((currCountDown) => {
+        setCorrectChars((correctChars) => {
+          setGraphData((currGraphData) => {
+            return [
+              ...currGraphData,
+              [
+                testTime - currCountDown + 1,
+                correctChars / 5 / ((testTime - currCountDown + 1) / 60),
+              ],
+            ];
+          });
 
-    //Create Current char Index by useSate
-    const [currCharIndex, setcurrCharIndex] = useState(0);
+          return correctChars;
+        });
 
-    const { testTime } = useTestMode()
-    const [countDown, setcountDown] = useState(testTime)
-
-    const [testStart, settestStart] = useState(false)
-    const [testEnd, settestEnd] = useState(false)
-    const [correctChar, setcorrectChar] = useState(0)
-    const [inCorrectChar, setinCorreCtChar] = useState(0)
-    const [missedChar, setmissedChar] = useState(0);
-    const [extraChar, setextraChar] = useState(0)
-    const [correctWords, setcorrectWords] = useState(0)
-    const [graphData, setgraphData] = useState([])
-    const [interValId, setIntervalId] = useState(null)
-
-    const startTimer = () => {
-
-        const interValId = setInterval(timmer, 1000);
-        setIntervalId(interValId)
-        function timmer() {
-            setcountDown((leatestCoundown) => {
-                setcorrectChar((correctChar) => {
-                    setgraphData((graphData) => {
-                        return [...graphData, [
-                            testTime - leatestCoundown + 1,
-                            (correctChar / 5) / ((testTime - leatestCoundown + 1) / 60)
-                        ]];
-                    })
-                    return correctChar
-                })
-                if (leatestCoundown === 1) {
-                    settestEnd(true);
-                    clearInterval(interValId);
-                    return 0;
-                }
-                return leatestCoundown - 1;
-            })
+        if (currCountDown === 1) {
+          clearInterval(intervalId);
+          setTestEnd(true);
+          return 0;
         }
+        return currCountDown - 1;
+      });
+    }
+  };
+
+  const resetTest = () => {
+    clearInterval(intervalId);
+    setCountDown(testTime);
+    setCurrWordIndex(0);
+    setCurrCharIndex(0);
+    setTestStart(false);
+    setTestEnd(false);
+    setWords(randomWords(500));
+    setCorrectChars(0);
+    setIncorrectChars(0);
+    setMissedChars(0);
+    setExtraChars(0);
+    setGraphData([]);
+    setCorrectWords(0);
+    resetWordSpanRef();
+  };
+
+  const resetWordSpanRef = () => {
+    wordSpanRef.map((i) => {
+      Array.from(i.current.childNodes).map((j) => {
+        j.className = "";
+      });
+    });
+    wordSpanRef[0].current.childNodes[0].className = "current";
+  };
+
+  const handleUserInput = (e) => {
+    if (!testStart) {
+      startTimer();
+      setTestStart(true);
     }
 
-    const calculateAcc = () => {
-        return Math.round((correctWords / currWordIndex) * 100);
-    }
-    const calculateWPM = () => {
-        return Math.round((correctChar / 5) / (testTime / 60));
+    let allChildSpan = wordSpanRef[currWordIndex].current.childNodes;
 
-    }
-    // Create inputRef for Input Ref by useref hook
-    const inputRef = useRef(null);
+    //logic for space
+    if (e.keyCode === 32) {
+      const correctSpans =
+        wordSpanRef[currWordIndex].current.querySelectorAll(".correct"); //get out all spans with correct classname
 
-    // function inputFocus to current focus
-    const inputFocus = () => {
-        inputRef.current.focus();
-    }
-    useEffect(() => {
-        resetTest();
-    }, [testTime])
+      if (correctSpans.length === allChildSpan.length) {
+        setCorrectWords(correctWords + 1);
+      }
 
+      if (allChildSpan.length <= currCharIndex) {
+        // cursor present at the end
+        allChildSpan[currCharIndex - 1].classList.remove("current-right");
+      } else {
+        //cursor present in between
+        setMissedChars(missedChars + (allChildSpan.length - currCharIndex));
+        for (let i = currCharIndex; i < allChildSpan.length; i++) {
+          allChildSpan[i].className += " skipped";
+        }
+        allChildSpan[currCharIndex].classList.remove("current");
+      }
 
-    // When page reload foucs on the Typing Box input.
-    useEffect(() => {
-        //callingh inputFocus function
-        inputFocus();
-        //Add class name current-word for blinking cursor for first later.
-        wordSpanRef[0].current.childNodes[0].className = 'current-word'
-    }, []);
+      //scrolling line condition
+      if (
+        wordSpanRef[currWordIndex + 1].current.offsetLeft <
+        wordSpanRef[currWordIndex].current.offsetLeft
+      ) {
+        //i am present at the last word of a line
+        wordSpanRef[currWordIndex].current.scrollIntoView();
+      }
 
-    // Create wordSpanRef useMemo for store ref of each word.
-    const wordSpanRef = useMemo(() => {
-        return Array(wordArray.length).fill(0).map(i => createRef(null)) //createRef is using in callBack function
-    }, [wordArray])
-
-
-    //handle reset Test
-
-    const resetTest = () => {
-        clearInterval(interValId)
-        setcountDown(testTime);
-        setcurrWordIndex(0)
-        setcurrCharIndex(0);
-        settestStart(false);
-        settestEnd(false);
-        inputFocus();
-        resetWordSpanRefClassname()
-        setwordArray(randomWords(50))
+      wordSpanRef[currWordIndex + 1].current.childNodes[0].className =
+        "current";
+      setCurrWordIndex(currWordIndex + 1);
+      setCurrCharIndex(0);
+      return;
     }
 
-    const resetWordSpanRefClassname = () => {
-        wordSpanRef.map(i => Array.from(i.current.childNodes).map(j => j.className = ''));
-        wordSpanRef[0].current.childNodes[0].className = 'current-word'
+    if (e.keyCode === 8) {
+      if (currCharIndex !== 0) {
+        if (currCharIndex === allChildSpan.length) {
+          if (allChildSpan[currCharIndex - 1].className.includes("extra")) {
+            allChildSpan[currCharIndex - 1].remove();
+            allChildSpan[currCharIndex - 2].className += " current-right";
+          } else {
+            allChildSpan[currCharIndex - 1].className = "current";
+          }
+
+          setCurrCharIndex(currCharIndex - 1);
+          return;
+        }
+        allChildSpan[currCharIndex].className = "";
+        allChildSpan[currCharIndex - 1].className = "current";
+        setCurrCharIndex(currCharIndex - 1);
+      }
+
+      return;
     }
 
-    // handleInput function for onkeydown handle event
-    const handleInput = (e) => {
-
-        if (!testStart) {
-            settestStart(true);
-            startTimer()
-        }
-        const allCurrChar = wordSpanRef[currWordIndex].current.childNodes; // craeting current char 
-
-        if (e.keyCode === 32) {
-            //Logic for space
-
-            let correctCharInword = wordSpanRef[currWordIndex].current.querySelectorAll('.correct');
-
-            if (correctCharInword.length === allCurrChar.length) {
-                setcorrectWords(correctWords + 1)
-            }
-
-            if (allCurrChar.length <= currCharIndex) {
-                //remove cursor from last place in word;
-                allCurrChar[currCharIndex - 1].classList.remove('current-word-right')
-            } else {
-                //remove from between the word
-                setmissedChar(missedChar + (allCurrChar.length - currCharIndex))
-                allCurrChar[currCharIndex].classList.remove('current-word')
-            }
-
-            wordSpanRef[currWordIndex + 1].current.childNodes[0].className = 'current-word';
-            setcurrWordIndex(currWordIndex + 1)
-            setcurrCharIndex(0)
-            return;
-        }
-
-
-
-        if (e.keyCode === 8) {
-            //Logic for BackSpace
-
-            if (currCharIndex !== 0) {
-
-                if (allCurrChar.length === currCharIndex) {
-                    //Logic for backspace end of word..
-
-                    if (allCurrChar[currCharIndex - 1].className.includes('extra')) {
-                        allCurrChar[currCharIndex - 1].remove();
-                        allCurrChar[currCharIndex - 2].className += " current-word-right"
-                    } else {
-                        allCurrChar[currCharIndex - 1].className = 'current-word';
-                    }
-                    setcurrCharIndex(currCharIndex - 1);
-                    return
-                }
-
-                allCurrChar[currCharIndex].className = '';
-                allCurrChar[currCharIndex - 1].className = 'current-word'
-                setcurrCharIndex(currCharIndex - 1)
-            }
-            return;
-        }
-
-        if (currCharIndex === allCurrChar.length) {
-
-            let newSpan = document.createElement('span');
-            newSpan.innerText = e.key; // add new latter
-            newSpan.className = 'incorrect extra current-word-right';
-            allCurrChar[currCharIndex - 1].classList.remove('current-word-right')
-            wordSpanRef[currWordIndex].current.append(newSpan)
-            setcurrCharIndex(currCharIndex + 1)
-            setextraChar(extraChar + 1)
-            return;
-        }
-
-        //chceking input value and ref value 
-        if (e.key === allCurrChar[currCharIndex].innerText) {
-            setcorrectChar(correctChar + 1);
-            allCurrChar[currCharIndex].className = 'correct';
-        } else {
-            setinCorreCtChar(inCorrectChar + 1)
-            allCurrChar[currCharIndex].className = 'incorrect';
-        }
-
-        if (currCharIndex + 1 === allCurrChar.length) {
-            allCurrChar[currCharIndex].className += ' current-word-right';
-        } else {
-            allCurrChar[currCharIndex + 1].className = 'current-word';
-        }
-
-        setcurrCharIndex(currCharIndex + 1)
+    if (currCharIndex === allChildSpan.length) {
+      //add new characters
+      setExtraChars(extraChars + 1);
+      let newSpan = document.createElement("span"); // -> <span></span>
+      newSpan.innerText = e.key;
+      newSpan.className = "incorrect current-right extra";
+      wordSpanRef[currWordIndex].current.append(newSpan);
+      allChildSpan[currCharIndex - 1].classList.remove("current-right");
+      setCurrCharIndex(currCharIndex + 1);
+      return;
     }
+
+    if (
+      e.key ===
+      wordSpanRef[currWordIndex].current.childNodes[currCharIndex].innerText
+    ) {
+      allChildSpan[currCharIndex].className = "correct";
+      setCorrectChars(correctChars + 1);
+    } else {
+      allChildSpan[currCharIndex].className = "incorrect";
+      setIncorrectChars(incorrectChars + 1);
+    }
+
+    if (currCharIndex + 1 === allChildSpan.length) {
+      allChildSpan[currCharIndex].className += " current-right";
+    } else {
+      allChildSpan[currCharIndex + 1].className = "current";
+    }
+
+    setCurrCharIndex(currCharIndex + 1);
+  };
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  const calculateWPM = () => {
+    return Math.round(correctChars / 5 / (testTime / 60));
+  };
+
+  const calculateAccuracy = () => {
+    return Math.round((correctWords / currWordIndex) * 100);
+  };
+
+  useEffect(() => {
+    resetTest();
+  }, [testTime]);
+
+  useEffect(() => {
+    focusInput();
+    wordSpanRef[0].current.childNodes[0].className = "current";
+  }, []);
+
 
 
     return (
         <div>
             <UpperMenu countDown={countDown} />
             {testEnd ? (<Stats wpm={calculateWPM()}
-                accuracy={calculateAcc()}
-                correctChars={correctChar}
-                incorrectChars={inCorrectChar}
-                missedchars={missedChar}
-                extraChars={extraChar}
+                accuracy={calculateAccuracy()}
+                correctChars={correctChars}
+                incorrectChars={incorrectChars}
+                missedchars={missedChars}
+                extraChars={extraChars}
                 graphData={graphData}
                 resetTest={resetTest}
-            />) : (<div className='type-box' onClick={inputFocus}>
+            />) : (<div className='type-box' onClick={focusInput}>
                 <div className='words'>
-                    {wordArray.map((word, index) => (
+                    {words.map((word, index) => (
                         <span className='word' ref={wordSpanRef[index]}>{word.split('').map(char => (
                             <span>{char}</span>
                         ))}</span>
@@ -220,7 +225,7 @@ function TypingBox() {
             </div>)}
             <input type='text'
                 className='hidden-input'
-                onKeyDown={handleInput}
+                onKeyDown={handleUserInput}
                 ref={inputRef}
             />
         </div>

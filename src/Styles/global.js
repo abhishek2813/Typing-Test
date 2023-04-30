@@ -43,7 +43,7 @@ body{
 .hidden-input{
   opacity:0;
 }
-.current-word{
+.current{
   border-left:1px solid;
   animation-name: blinking;
   animation-duration: 4s;
@@ -57,7 +57,7 @@ body{
     100%{border-left:1px solid ${({theme})=>theme.textColor};}
   }
 }
-.current-word-right{
+.current-right{
   border-right:1px solid;
   animation-name: blinkingright;
   animation-duration: 4s;
